@@ -1,8 +1,9 @@
 import csv
+import os.path
 import uuid
 
 import numpy
-from numpy import ndarray
+import matplotlib.pyplot as plt
 
 
 class Points:
@@ -12,7 +13,7 @@ class Points:
         self.standard_deviation = standard_deviation
         self.size = size
 
-    def generate_random_points(self) -> ndarray:
+    def generate_random_points(self):
         """
         This function generate random points with Mean of X1 distribution, Mean of X2 distribution, Standard derivation
         and Resultant shape.
@@ -21,12 +22,13 @@ class Points:
         """
         x1 = numpy.random.normal(loc=self.mean_x1, scale=self.standard_deviation, size=self.size)
         x2 = numpy.random.normal(loc=self.mean_x2, scale=self.standard_deviation, size=self.size)
-        points = numpy.vstack((x1, x2)).T
-        return points
+        return x1, x2
 
     @staticmethod
-    def extend_ndarrays(first_array, second_array):
-        result_array = numpy.append(first_array, second_array, 0)
+    def extend_ndarrays(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2):
+        minus_one_points = numpy.vstack((minus_one_x1, minus_one_x2)).T
+        plus_one_points = numpy.vstack((plus_one_x1, plus_one_x2)).T
+        result_array = numpy.append(minus_one_points, plus_one_points, 0)
         return result_array
 
     @staticmethod
@@ -44,23 +46,46 @@ class Points:
 
         file_path = points_csv.name.split('media/')[1]
 
-        return file_path
+        return file_path, filename
 
-    def create_points_plot(self):
-        # todo plots
-        pass
+    @staticmethod
+    def create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename):
+        plt.scatter(minus_one_x1, minus_one_x2, c='red')
+        plt.scatter(plus_one_x1, plus_one_x2, c='blue')
+        plt.savefig(f"../media/{filename}.png")
+
+        if os.path.exists(f"../media/{filename}.png"):
+            plot_path = f"{filename}.png"
+            return plot_path
+        else:
+            raise FileNotFoundError
 
 
-def generate_points_create_csv() -> str:
+def generate_points_create_csv():
     """
     This function make all actions from generate points up to create csv file.
 
     :return: path to generated csv file.
     """
+    # instances initialization
     class_minus_one_points = Points(mean_x1=10.0, mean_x2=14.0, standard_deviation=4.0, size=50)
     class_plus_one_points = Points(mean_x1=20.0, mean_x2=18.0, standard_deviation=3.0, size=50)
-    generated_first_points = class_minus_one_points.generate_random_points()
-    generated_second_points = class_plus_one_points.generate_random_points()
-    resulted_ndarray = Points.extend_ndarrays(generated_first_points, generated_second_points)
-    csv_file_path = Points.create_points_csv(resulted_ndarray)
-    return csv_file_path
+
+    # generate random points
+    minus_one_x1, minus_one_x2 = class_minus_one_points.generate_random_points()
+    plus_one_x1, plus_one_x2 = class_plus_one_points.generate_random_points()
+
+    # create one 2D array from 2 arrays
+    resulted_ndarray = Points.extend_ndarrays(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2)
+
+    # create csv file
+    csv_file_path, filename = Points.create_points_csv(resulted_ndarray)
+
+    #create plot
+    plot_file_path = Points.create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename)
+
+    return csv_file_path, plot_file_path
+
+
+if __name__ == '__main__':
+    generate_points_create_csv()
