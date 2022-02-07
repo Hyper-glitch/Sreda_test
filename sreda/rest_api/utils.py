@@ -28,15 +28,15 @@ class Points:
         return x1, x2
 
     @staticmethod
-    def join_ndarrays(minus_one_2D, plus_one_2D) -> ndarray:
+    def join_ndarrays(minus_one_2d, plus_one_2d) -> ndarray:
         """
         Join two 2D arrays.
-        :param minus_one_2D: 2D array of class-1 x1, x2 values
-        :param plus_one_2D: 2D array of class+1 x1, x2 values
+        :param minus_one_2d: 2D array of class-1 x1, x2 values
+        :param plus_one_2d: 2D array of class+1 x1, x2 values
         :return: result_array - 2D array with all points
         """
 
-        result_array = numpy.append(minus_one_2D, plus_one_2D, 0)
+        result_array = numpy.append(minus_one_2d, plus_one_2d, 0)
         return result_array
 
     @staticmethod
@@ -58,7 +58,6 @@ class Points:
     def create_points_csv(resulted_ndarray) -> tuple:
         """
         Create csv file with resulted points.
-
         :param resulted_ndarray: resulted 2D array with x1, x2 values
         :return: file_path, filename - path to media for downloading the file and name of the file
         """
@@ -76,7 +75,6 @@ class Points:
     def remove_files(csv_file_path, plot_file_path):
         """
         Create csv file with resulted points.
-
         :param csv_file_path: path to csv file
         :param plot_file_path: path to plot
         """
@@ -91,13 +89,11 @@ class Points:
     def create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename) -> str:
         """
         Create a plot with resulted points.
-
         :param minus_one_x1: 1D array of class-1 x1 values
         :param minus_one_x2: 1D array of class-1 x2 values
         :param plus_one_x1: 1D array of class+1 x1 values
         :param plus_one_x2: 1D array of class+1 x2 values
         :param filename - the name of the file
-
         :return: plot_path, a path to the plot
         """
 
@@ -115,10 +111,10 @@ class Points:
 def generate_points_create_csv():
     """
     This function make all actions from generate points up to create csv file and plot by points.
-
     :return: csv_file_path - path to generated csv file
              plot_file_path - path to generated plot
     """
+
     # instances initialization
     class_minus_one_points = Points(mean_x1=10.0, mean_x2=14.0, standard_deviation=4.0, size=50)
     class_plus_one_points = Points(mean_x1=20.0, mean_x2=18.0, standard_deviation=3.0, size=50)
