@@ -5,6 +5,8 @@ import uuid
 import numpy
 import matplotlib.pyplot as plt
 
+from .models import CustomUser
+
 
 class Points:
     def __init__(self, mean_x1: float, mean_x2: float, standard_deviation: float, size: int):
@@ -40,7 +42,7 @@ class Points:
         :return: file_path - path to media for downloading the file
         """
         filename = str(uuid.uuid4())
-        with open(f"../media/{filename}.csv", "w") as points_csv:
+        with open(f"./media/{filename}.csv", "w") as points_csv:
             writer = csv.writer(points_csv, delimiter=',')
             writer.writerows(points)
 
@@ -52,9 +54,9 @@ class Points:
     def create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename):
         plt.scatter(minus_one_x1, minus_one_x2, c='red')
         plt.scatter(plus_one_x1, plus_one_x2, c='blue')
-        plt.savefig(f"../media/{filename}.png")
+        plt.savefig(f"./media/{filename}.png")
 
-        if os.path.exists(f"../media/{filename}.png"):
+        if os.path.exists(f"./media/{filename}.png"):
             plot_path = f"{filename}.png"
             return plot_path
         else:
@@ -65,7 +67,8 @@ def generate_points_create_csv():
     """
     This function make all actions from generate points up to create csv file.
 
-    :return: path to generated csv file.
+    :return: csv_file_path - path to generated csv file
+             plot_file_path - path to generated plot
     """
     # instances initialization
     class_minus_one_points = Points(mean_x1=10.0, mean_x2=14.0, standard_deviation=4.0, size=50)
@@ -81,10 +84,15 @@ def generate_points_create_csv():
     # create csv file
     csv_file_path, filename = Points.create_points_csv(resulted_ndarray)
 
-    #create plot
+    # create plot
     plot_file_path = Points.create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename)
 
     return csv_file_path, plot_file_path
+
+
+def is_user_exists(username):
+    user_exists = CustomUser.objects.filter(username=username).exists()
+    return user_exists
 
 
 if __name__ == '__main__':

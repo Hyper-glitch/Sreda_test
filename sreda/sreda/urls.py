@@ -16,6 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from rest_api import views as api_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('register/', api_views.register, name='register'),
+    path('get_users_csv_file/', api_views.get_users_csv_file, name='get_csv_file'),
+    path('get_users_plot/', api_views.get_users_plot, name='get_users_plot'),
+    path('regenerate_users_csv_file/', api_views.regenerate_users_csv_file, name='regenerate_users_csv_file'),
 ]

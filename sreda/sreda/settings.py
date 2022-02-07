@@ -68,6 +68,8 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'rest_api.CustomUser'
+
 WSGI_APPLICATION = 'sreda.wsgi.application'
 
 

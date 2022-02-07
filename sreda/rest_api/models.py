@@ -1,16 +1,22 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
-from rest_api.utils import generate_points_create_csv
+from .managers import CustomUserManager
 
 
-class CustomUser(models.Model):
-    generated_points = models.FileField(null=True, blank=True, upload_to='csv_points')
-    plot_with_points = models.ImageField(null=True, blank=True, upload_to='plots')
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=30, unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default=timezone.now)
+    generated_points = models.FileField(null=True, blank=True)
+    plot_with_points = models.ImageField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        super(CustomUser, self).save(*args, **kwargs)
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
 
-        csv_file_path, plot_file_path = generate_points_create_csv()
-        self.generated_points.name = csv_file_path
-        self.plot_with_points.name = plot_file_path
+    objects = CustomUserManager()
 
+    def __str__(self):
+        return self.username
