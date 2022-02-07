@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: postgres_sreda
+    restart: always
+    ports:
+      - 5555:5432
+    networks:
+      - sreda_network
+    volumes:
+      - postgres_sreda_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  rest:
+    build: .
+    container_name: sreda_rest
+    restart: always
+    ports:
+      - 8000:8000
+    networks:
+      - sreda_network
+    volumes:
+      - sreda_rest_data:/sreda_rest/volume/data
+    env_file:
+      - .env
+    command: >
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py createsuperuser --noinput &&
+             python3 manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+
+networks:
+  sreda_network:
+    driver: bridge
+
+volumes:
+  postgres_sreda_data: {}
+  sreda_rest_data: {}
