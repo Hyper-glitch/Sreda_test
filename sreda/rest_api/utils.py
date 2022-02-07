@@ -51,6 +51,12 @@ class Points:
         return file_path, filename
 
     @staticmethod
+    def remove_files(csv_file_path, plot_file_path):
+        if os.path.exists(csv_file_path) and os.path.exists(plot_file_path):
+            os.remove(csv_file_path)
+            os.remove(plot_file_path)
+
+    @staticmethod
     def create_points_plot(minus_one_x1, minus_one_x2, plus_one_x1, plus_one_x2, filename):
         plt.scatter(minus_one_x1, minus_one_x2, c='red')
         plt.scatter(plus_one_x1, plus_one_x2, c='blue')

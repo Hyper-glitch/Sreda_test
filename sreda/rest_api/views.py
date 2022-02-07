@@ -3,7 +3,7 @@ from django.http import HttpResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import CustomUser
-from .utils import generate_points_create_csv, is_user_exists
+from .utils import generate_points_create_csv, is_user_exists, Points
 
 
 @csrf_exempt
@@ -45,6 +45,7 @@ def get_users_plot(request):
         raise BadRequest('The user does not register yet or invalid request method')
 
 
+@csrf_exempt
 def regenerate_users_csv_file(request):
     username = request.GET['username']
     user_exists = is_user_exists(username)
@@ -52,16 +53,19 @@ def regenerate_users_csv_file(request):
     try:
         if request.method == 'POST' and user_exists:
             user = CustomUser.objects.get(username=username)
+
+            csv_file_path = user.generated_points.path
+            plot_file_path = user.plot_with_points.path
+            Points.remove_files(csv_file_path, plot_file_path)
+
             user.generated_points = ''
             user.plot_with_points = ''
             user.save(update_fields=['generated_points', 'plot_with_points'])
 
-            csv_file_path, plot_file_path = generate_points_create_csv()
-            user.generated_points.name = csv_file_path
-            user.plot_with_points.name = plot_file_path
+            new_csv_file_path, new_plot_file_path = generate_points_create_csv()
+            user.generated_points.name = new_csv_file_path
+            user.plot_with_points.name = new_plot_file_path
             user.save(update_fields=['generated_points', 'plot_with_points'])
             return HttpResponse('<h1>User was successfully regenerated new points</h1>')
-        else:
-            raise BadRequest('Invalid request method.')
     except Exception:
         print("Oops! Something went wrong")
