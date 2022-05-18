@@ -11,7 +11,10 @@ Project is created with:
 ## Setup
 To run this project, install it locally using:
 1. git clone https://github.com/Hyper-glitch/Sreda_test.git
-2. ```bash cd sreda/ && docker-compose up```
+2. 
+```bash
+cd sreda/ && docker-compose up
+```
 
 # Example screens
 ![Algorithm schema](plot.png)
